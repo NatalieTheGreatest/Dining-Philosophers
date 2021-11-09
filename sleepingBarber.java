@@ -7,15 +7,27 @@ import java.util.concurrent.Semaphore;
 public class sleepingBarber{
     // main is here
     public static void main (String[] args){
-    System.out.println("IT DOES SOMETHING");
     // Input sleepTimeBarber and numChairs from command line
-    int sleep = 5;
-    int numChairs = 3;
-    for (String s: args) {
-        System.out.println(s);
+    int sleep = -1;
+    int numChairs = -1;
+    try{
+    sleep = Integer.parseInt(args[0]);
     }
-
-    System.out.println(sleep + " " + numChairs + "chairs is sleep");
+    catch(Exception e){
+        //Mostly for if they give random numbers or not enough args. Not a big deal
+        System.out.println("Integer args please");
+    }
+    try{
+        numChairs = Integer.parseInt(args[1]);
+    }
+    catch(Exception e){
+         System.out.println("Integer args please");
+    }
+    if(sleep == -1)
+        sleep = 5;
+    if(numChairs == -1)
+        numChairs = 3;
+    System.out.println("Nap time is " + sleep + ", and there are " + numChairs + " chairs");
     // Default sleepTimeBarber = 5, default numChairs = 3
     // Print parameters.
     // instantiate shop here.
