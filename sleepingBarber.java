@@ -1,10 +1,10 @@
 //Sleeping barber
 //Developed mostly by Natalie Friede 010892127
-import java.io.Console;
-import java.util.Scanner;
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 public class sleepingBarber{
+
     // main is here
     public static void main (String[] args){
     // Input sleepTimeBarber and numChairs from command line
@@ -32,7 +32,7 @@ public class sleepingBarber{
     // Print parameters.
     // instantiate shop here.
     barberShop shop = new barberShop(numChairs);
-    Barber barber = new Barber(shop);
+    Barber barber = new Barber(shop, sleep);
     CustomerGenerator custGen = new CustomerGenerator(shop);
     Thread oneBarber = new Thread(barber);
     Thread multipleCustGen = new Thread(custGen);
@@ -43,9 +43,11 @@ public class sleepingBarber{
     // Barber object that will become thread.
 class Barber implements Runnable{
     barberShop shop;
+    int sleepTime;
     // Need access to shop object.
-    public Barber(barberShop shop){
+    public Barber(barberShop shop, int sleep){
     this.shop = shop;
+    this.sleepTime = sleep;
     }
     public void run(){
     //Simulate sleep by putting thread to sleep
@@ -62,6 +64,7 @@ class Customer implements Runnable{
     this.shop = shop;
     }
     public void run(){
+    System.out.println("running boy");
     goForHairCut();
     }
     private void goForHairCut(){
@@ -71,6 +74,7 @@ class Customer implements Runnable{
     // CustomerGenerator that will become thread to start customer
    // threads.
 class CustomerGenerator implements Runnable{
+    private final static Random generator = new Random();
     barberShop shop;
     // Need access to shop object.
     public CustomerGenerator(barberShop shop){
@@ -79,9 +83,17 @@ class CustomerGenerator implements Runnable{
     public void run(){
     while(true){
     // Create customers and pass object “shop”
+    Customer c = new Customer(shop);
     // Create thread
+    Thread cutsomerThread = new Thread(c);
     // start threads
+    cutsomerThread.start();
     // sleep random amount of time
+    try {
+        Thread.sleep(generator.nextInt(3000));
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
     }
     } 
 }
