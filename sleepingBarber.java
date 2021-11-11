@@ -1,5 +1,7 @@
 //Sleeping barber
 //Developed mostly by Natalie Friede 010892127
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
@@ -64,7 +66,7 @@ class Customer implements Runnable{
     this.shop = shop;
     }
     public void run(){
-    System.out.println("running boy");
+    System.out.println(new Date() + Thread.currentThread().getName());
     goForHairCut();
     }
     private void goForHairCut(){
@@ -90,7 +92,7 @@ class CustomerGenerator implements Runnable{
     cutsomerThread.start();
     // sleep random amount of time
     try {
-        Thread.sleep(generator.nextInt(3000));
+        Thread.sleep(generator.nextInt(10000));
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
@@ -99,19 +101,24 @@ class CustomerGenerator implements Runnable{
 }
 
 class barberShop{
+     LinkedList<Customer> customerList = new LinkedList<Customer>();
      int chairs = 0;
      Semaphore customers;
+     Semaphore barber;
      Semaphore mutex;
      public barberShop(int chairs)
      {
          this.chairs = chairs;
          customers = new Semaphore(chairs);
+         barber = new Semaphore(1);
          mutex = new Semaphore(1);
 
      }
-    // Initialize variables
-    // Initialize semaphores and mutex and waiting
+
     public void cutHair(){
+    while(true){
+       
+        }
     // Wait on customer
     // Do things here like update number of customers waiting,
     //signal to wake up barber, etc.
