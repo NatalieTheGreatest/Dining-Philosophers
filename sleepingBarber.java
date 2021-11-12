@@ -1,5 +1,6 @@
 //Sleeping barber
 //Developed mostly by Natalie Friede 010892127
+//By that I mean I used the starter template 
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
@@ -17,13 +18,13 @@ public class sleepingBarber{
     }
     catch(Exception e){
         //Mostly for if they give random numbers or not enough args. Not a big deal
-        System.out.println("Integer args please");
+        System.out.println("Integer args for sleep please");
     }
     try{
         numChairs = Integer.parseInt(args[1]);
     }
     catch(Exception e){
-         System.out.println("Integer args please");
+         System.out.println("Integer args for chairs please");
     }
     //Let the guy rest! No 0 sleep and always has a waiting room
     if(sleep <= 0)
