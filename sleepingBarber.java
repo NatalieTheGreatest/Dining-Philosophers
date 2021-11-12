@@ -54,21 +54,29 @@ class Barber implements Runnable {
     //Simulate sleep by putting thread to sleep
     while(true){
     shop.cutHair();
+
     }
   }
 }
     // Customer object that will become thread.
 class Customer implements Runnable{
     barberShop shop;
+    String customerName;
     // Need access to shop object.
     public Customer(barberShop shop){
     this.shop = shop;
     }
     public void run(){
+    customerName = Thread.currentThread().getName();
     goForHairCut();
+    }
+    public void hairBegone() {
+        System.out.println("Customer " + customerName + " gets their hair cut");
+
     }
     private void goForHairCut(){
     shop.add(this);
+
     }
 }
     // CustomerGenerator that will become thread to start customer
@@ -107,7 +115,7 @@ class barberShop {
      //The mutexes
      //for barber
      Semaphore barberReady;
-     //for customer
+
 
      public barberShop(int chairs, int sleepTime)
      {
@@ -116,43 +124,50 @@ class barberShop {
          mutex = new Semaphore(1);
          barberReady = new Semaphore(1);
          customerList = new ArrayBlockingQueue<Customer>(chairs);
-         System.out.println(customerList.remainingCapacity() + "CAPACITY SHIT");
          this.sleepTime = sleepTime;
      }
 
     public void cutHair(){
     while(true){
-        // if(!customerList.isEmpty())
-        // {
-        // //If he isn't asleep he falls asleep
-        // if(barberReady.tryAcquire()){
-        //   System.out.println("Barber has fallen asleep");
-        //   try{
-        //     barberReady.release();
-        //      }
-        //     catch(Exception e)
-        //     {
-        //        System.out.println("Barber had a nightmare");
-        //     }
-        // }
-        // //If he was asleep, he sleeps 
-        // else {
-        //     try {
-        //         //It really should be released, but double releasing it just in case
-        //         barberReady.release();
-        //         Thread.sleep(sleepTime*1000);
-        //     } catch (InterruptedException e) {
-        //         System.out.println("Barber can't catch a break and is insomniac");
-        //     }
-        // }
-        // }
+        //Waits to check out the customer list
+        try{
+        mutex.acquire();
+        if(customerList.isEmpty())
+        {
+            System.out.println("The barber is sleeping");
+            //He is ready but he's sleeping
+            mutex.release();
+            barberReady.release();
+            Thread.sleep(sleepTime*1000);
+        }
+        //If he isn't asleep he falls asleep
+        //If he was asleep, he sleeps 
+        else {
+            try {
+                System.out.println("The barber wakes up and starts cutting hair at " + new Date());
+                //He's getting ready
+                customerList.poll().hairBegone();
+                mutex.release();
+                Thread.sleep(sleepTime*1000);
+                System.out.println("The barber is done cutting hair at " + new Date());
+                barberReady.release();
+                
 
-         }
+            } catch (InterruptedException e) {
+                System.out.println("Barber can't catch a break and is insomniac");
+            }
+        }
+        }
+        catch(Exception e) {
+            System.out.println("Barber can't tell if there's customers because mutex broke");
+        }
+    }
+
+ }
     // Wait on customer
     // Do things here like update number of customers waiting,
     //signal to wake up barber, etc.
     // Simulate cutting hair with sleep
-    }
     
     public void add(Customer customer){
     System.out.println("Customer " + Thread.currentThread().getName() + " enters the shop at " + new Date());
@@ -160,7 +175,6 @@ class barberShop {
      try{
         //Mutually exclusive access
         mutex.acquire();
-        System.out.println(customerList.remainingCapacity());
         if(customerList.remainingCapacity() > 0)
         {
             occupiedSeats.acquire();
@@ -169,7 +183,9 @@ class barberShop {
             //Done editing stuff someone else can try to enter
             mutex.release();
             try {
+           //Waits for barber
            barberReady.acquire();
+           occupiedSeats.release();
             }
             catch(Exception e){
                 System.out.println("The barber shop had a mixup! Oopsies");
