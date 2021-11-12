@@ -99,8 +99,8 @@ class CustomerGenerator implements Runnable{
     cutsomerThread.start();
     // sleep random amount of time
     try {
-        //It gets a little intense if you have it shorter than this
-        Thread.sleep(generator.nextInt(10000));
+        //This just seemed fast enough, but not excessive
+        Thread.sleep(generator.nextInt(7000));
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
@@ -146,7 +146,7 @@ class barberShop {
         //If he was asleep, he sleeps 
         else {
             try {
-                System.out.println("The barber wakes up and starts cutting hair at " + new Date());
+                System.out.println("The barber starts cutting hair at " + new Date());
                 //He's getting ready
                 customerList.poll().hairBegone();
                 mutex.release();
