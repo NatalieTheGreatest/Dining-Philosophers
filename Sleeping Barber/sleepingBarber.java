@@ -197,6 +197,8 @@ class barberShop {
         else{
             mutex.release();
             System.out.println("Customer " + Thread.currentThread().getName() + " does not get a seat and leaves the shop"); 
+            //I was told not to kill them, so they just kinda hang out and accumulate at this point
+            //Probably not ideal, but you can't go killing customers!!
         }
      }
      catch(Exception e)
