@@ -98,7 +98,8 @@ class CustomerGenerator implements Runnable{
     cutsomerThread.start();
     // sleep random amount of time
     try {
-        Thread.sleep(generator.nextInt(3000));
+        //It gets a little intense if you have it shorter than this
+        Thread.sleep(generator.nextInt(10000));
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
