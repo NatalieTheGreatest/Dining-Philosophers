@@ -4,14 +4,15 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
-
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 public class sleepingBarber{
 
     // main is here
     public static void main (String[] args){
     // Input sleepTimeBarber and numChairs from command line
-    int sleep = -1;
-    int numChairs = -1;
+    int sleep = 5;
+    int numChairs = 3;
     try{
     sleep = Integer.parseInt(args[0]);
     }
@@ -25,15 +26,16 @@ public class sleepingBarber{
     catch(Exception e){
          System.out.println("Integer args please");
     }
-    if(sleep == -1)
+    //Let the guy rest! No 0 sleep and always has a waiting room
+    if(sleep <= 0)
         sleep = 5;
-    if(numChairs == -1)
+    if(numChairs <= 0)
         numChairs = 3;
     System.out.println("Nap time is " + sleep + ", and there are " + numChairs + " chairs");
     // Default sleepTimeBarber = 5, default numChairs = 3
     // Print parameters.
     // instantiate shop here.
-    barberShop shop = new barberShop(numChairs);
+    barberShop shop = new barberShop(numChairs, sleep);
     Barber barber = new Barber(shop, sleep);
     CustomerGenerator custGen = new CustomerGenerator(shop);
     Thread oneBarber = new Thread(barber);
@@ -43,7 +45,7 @@ public class sleepingBarber{
     }
   }
     // Barber object that will become thread.
-class Barber implements Runnable{
+class Barber implements Runnable {
     barberShop shop;
     int sleepTime;
     // Need access to shop object.
@@ -56,7 +58,7 @@ class Barber implements Runnable{
     while(true){
     shop.cutHair();
     }
-    }
+  }
 }
     // Customer object that will become thread.
 class Customer implements Runnable{
@@ -66,7 +68,6 @@ class Customer implements Runnable{
     this.shop = shop;
     }
     public void run(){
-    System.out.println(new Date() + Thread.currentThread().getName());
     goForHairCut();
     }
     private void goForHairCut(){
@@ -92,32 +93,68 @@ class CustomerGenerator implements Runnable{
     cutsomerThread.start();
     // sleep random amount of time
     try {
-        Thread.sleep(generator.nextInt(10000));
+        Thread.sleep(generator.nextInt(3000));
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
-    }
-    } 
+   }
+  } 
 }
 
-class barberShop{
-     LinkedList<Customer> customerList = new LinkedList<Customer>();
+class barberShop {
+     private final static Random generator = new Random();
+     BlockingQueue<Customer> customerList;
      int chairs = 0;
-     Semaphore customers;
-     Semaphore barber;
+     int sleepTime = 0;
      Semaphore mutex;
-     public barberShop(int chairs)
+     Semaphore occupiedSeats;
+     //The mutexes
+     //for barber
+     Semaphore barberReady;
+     //for customer
+
+     public barberShop(int chairs, int sleepTime)
      {
          this.chairs = chairs;
-         customers = new Semaphore(chairs);
-         barber = new Semaphore(1);
+         occupiedSeats = new Semaphore(chairs);
          mutex = new Semaphore(1);
-
+         customerList = new ArrayBlockingQueue<Customer>(chairs);
+         this.sleepTime = sleepTime;
      }
 
     public void cutHair(){
     while(true){
-       
+        if(!customerList.isEmpty())
+        {
+        //If he isn't asleep he falls asleep
+        if(barberReady.tryAcquire()){
+          System.out.println("Barber has fallen asleep");
+          try{
+            barberReady.release();
+             }
+            catch(Exception e)
+            {
+               System.out.println("Barber had a nightmare");
+            }
+        }
+        //If he was asleep, he sleeps 
+        else {
+            try {
+                //It really should be released, but double releasing it just in case
+                barberReady.release();
+                Thread.sleep(sleepTime*1000);
+            } catch (InterruptedException e) {
+                System.out.println("Barber can't catch a break and is insomniac");
+            }
+        }
+        }
+        //If barber is ready he's gonna do stuff
+        else if(barberReady.tryAcquire())
+        {
+            Customer c = customerList.poll();
+
+        }
+        
         }
     // Wait on customer
     // Do things here like update number of customers waiting,
@@ -125,9 +162,32 @@ class barberShop{
     // Simulate cutting hair with sleep
     }
     public void add(Customer customer){
-    // Wait on entering the critical section
-    // DO THINGS HERE like determine if there are enough chairs
-   // in the waiting room. Leave if waiting room is full. If waiting room is
-    //not full, things must happen.
+     System.out.println("Customer " + Thread.currentThread().getName() + " enters the shop at " + new Date());
+     try{
+        if(occupiedSeats.tryAcquire())
+        {
+            System.out.println("Customer " + Thread.currentThread().getName() + " gets a chair");
+            customerList.add(customer);
+            try {
+               if(barberReady.availablePermits() < 1){
+                    barberReady.release();
+                   System.out.println("Barber is being woken");
+               }
+            }
+            catch(Exception e){
+                System.out.println("The barber shop had a mixup! Oopsies");
+            }
+        }
+           
+        else{
+            System.out.println("Customer " + Thread.currentThread().getName() + " does not get a seat and leaves the shop"); 
+            Thread.currentThread().interrupt();
+        }
+     }
+     catch(Exception e)
+     {
+         System.out.println(e.getStackTrace());
+     }
+
     }
 }
