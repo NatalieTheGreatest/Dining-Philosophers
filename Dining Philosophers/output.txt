@@ -1,0 +1,66 @@
+nefriede@turing:~/operatingSystems$ java DiningPhilosopher 20
+Philiosopher 1 is Thinking
+Philiosopher 2 is Thinking
+Philiosopher 4 is Thinking
+Philiosopher 5 is Thinking
+Philiosopher 3 is Thinking
+Philiosopher 3 picked up left Chopstick
+Philiosopher 3 picked up right Chopstick
+Philiosopher 3 set down right Chopstick
+Philiosopher 3 set down left Chopstick
+Philiosopher 3 is Thinking
+Philiosopher 5 picked up left Chopstick
+Philiosopher 4 picked up left Chopstick
+Philiosopher 1 picked up left Chopstick
+Philiosopher 4 picked up right Chopstick
+Philiosopher 3 picked up left Chopstick
+Philiosopher 4 set down right Chopstick
+Philiosopher 4 set down left Chopstick
+Philiosopher 5 picked up right Chopstick
+Philiosopher 4 is Thinking
+Philiosopher 3 picked up right Chopstick
+Philiosopher 5 set down right Chopstick
+Philiosopher 5 set down left Chopstick
+Philiosopher 5 is Thinking
+Philiosopher 1 picked up right Chopstick
+Philiosopher 1 set down right Chopstick
+Philiosopher 1 set down left Chopstick
+Philiosopher 1 is Thinking
+Philiosopher 2 picked up left Chopstick
+Philiosopher 3 set down right Chopstick
+Philiosopher 3 set down left Chopstick
+Philiosopher 4 picked up left Chopstick
+Philiosopher 3 is Thinking
+Philiosopher 2 picked up right Chopstick
+Philiosopher 4 picked up right Chopstick
+Philiosopher 1 picked up left Chopstick
+Philiosopher 4 set down right Chopstick
+Philiosopher 4 set down left Chopstick
+Philiosopher 4 is Thinking
+Philiosopher 2 set down right Chopstick
+Philiosopher 2 set down left Chopstick
+Philiosopher 2 is Thinking
+Philiosopher 1 picked up right Chopstick
+Philiosopher 3 picked up left Chopstick
+Philiosopher 1 set down right Chopstick
+Philiosopher 1 set down left Chopstick
+Philiosopher 1 is Thinking
+Philiosopher 5 picked up left Chopstick
+Philiosopher 3 picked up right Chopstick
+Philiosopher 1 picked up left Chopstick
+Philiosopher 5 picked up right Chopstick
+Philiosopher 3 set down right Chopstick
+Philiosopher 3 set down left Chopstick
+Philiosopher 3 is Thinking
+Philiosopher 4 picked up left Chopstick
+Philiosopher 3 picked up left Chopstick
+Philiosopher 5 set down right Chopstick
+Philiosopher 5 set down left Chopstick
+Philiosopher 4 picked up right Chopstick
+Philiosopher 1 picked up right Chopstick
+Philiosopher 5 is Thinking
+Philiosopher 4 set down right Chopstick
+Philiosopher 4 set down left Chopstick
+Philiosopher 4 is Thinking
+Philiosopher 3 picked up right Chopstick
+Restraunt is closed. Philosophers are ejected
